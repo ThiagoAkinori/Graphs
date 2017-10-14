@@ -5,7 +5,8 @@ from igraph import *
 from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.stem.porter import PorterStemmer
 import numpy as np
-
+from igraph.drawing.text import TextDrawer
+import cairo
 
 
 
@@ -95,7 +96,6 @@ def CreateGraph(wordlist, graph, label):
 		lastword = word
 	searchlist=[]
 	g.es["weight"]=weights
-	g.es["label"]=label
 
 
 
@@ -140,10 +140,17 @@ outdegree = g.outdegree()
 bins = np.linspace(0, max(outdegree), len(colours))  
 digitized_degrees =  np.digitize(outdegree, bins)
 g.vs["color"] = [colours[x-1] for x in digitized_degrees]
-visual_style["vertex_size"] = [x/max(outdegree)*30+3 for x in outdegree]
+visual_style["vertex_size"] = [x/max(outdegree)*50+3 for x in outdegree]
 N = len(label)
 visual_style["edge_curved"] = False
-visual_style["layout"] = g.layout_fruchterman_reingold(weights=g.es["weight"], maxiter=1000, area=N**10, repulserad=N**3)
+visual_style["layout"] = g.layout_fruchterman_reingold(weights=g.es["weight"], maxiter=1000, area=N**10, repulserad=N**10)
 
 print(g)
-#plot (g, **visual_style);
+plot = Plot("plot.png", bbox=(2000, 2000), background="white")
+plot.add(g, bbox=(20, 70, 1800, 1800), **visual_style)
+
+# Make the plot draw itself on the Cairo surface
+plot.redraw()
+
+# Save the plot
+plot.save()
