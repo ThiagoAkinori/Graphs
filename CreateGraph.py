@@ -10,12 +10,19 @@ import cairo
 
 
 
-def Write_Files(novo, conteudo):
+def Write_Graph(novo, conteudo):
 	with open(novo,'w') as h:
+		h.write(str(g))
+		h.write("\n")
+		h.write(str(g.es["weight"])+"\n")
+	h.close()	
+
+def Write_File(novo, conteudo):
+	with open(novo, 'w') as h:
 		for i in conteudo:
 			h.write(i+' ')
-	h.close();	
-
+		h.write("\n")
+	h.close()
 
 def Remove_Stopwords(stoplist, texto, texto_filtrado):
 	#Lendo os arquivos necessários
@@ -23,8 +30,8 @@ def Remove_Stopwords(stoplist, texto, texto_filtrado):
 		stoplist = f.read().splitlines()
 		with codecs.open (texto,'r', "utf-8") as g:
 			texto = g.read().split()
-	f.close();
-	g.close();
+	f.close()
+	g.close()
 
 	for palavra in texto:
 		#deixando a palavra em minúsculo
@@ -67,31 +74,28 @@ def Remove_Stopwords(stoplist, texto, texto_filtrado):
 def CreateGraph(wordlist, graph, label):
 	searchlist=[]
 	weights=[]
-	count = 0
 	for word in wordlist:
 		try:
 			position = searchlist.index(word)
 		except ValueError:
 			position = -1
-
 		if position > -1:
-			
-			if (g.get_eid(word, lastword, directed=False, error=False) or g.get_eid(lastword, word, directed=False, error=False)):
-				count = 0;
-				for edge in g.es:
-					if (edge == (lastword,word) or edge == (word, lastword)):
-						weights[count] = weights[count]+1
+			src = g.vs.find(name=word)
+			tgt = g.vs.find(name=lastword)
+			if g.are_connected(src,tgt):
+				for idx, edge in enumerate(g.es):
+					if (edge.source == src.index and edge.target == tgt.index) or (edge.target == src.index and edge.source == tgt.index):
+						weights[idx]=weights[idx]+1
 						break
-					count=count+1
 			else:
-				g.add_edge(word, lastword)
+				g.add_edge(lastword, word)
+				weights.append(1)
 
 		else:
 			g.add_vertices(word)
 			if len(searchlist) > 0:
 				g.add_edge(lastword, word)
 				weights.append(1)
-			label.append(word)
 			searchlist.append(word)
 		lastword = word
 	searchlist=[]
@@ -125,6 +129,7 @@ filtrado=[]
 for word in lemantized:
 	stem.append(st.stem(word))
 lemantized=[]
+Write_File("texto.txt", stem)
 
 #Construção do grafo
 g = Graph()
@@ -145,12 +150,13 @@ N = len(label)
 visual_style["edge_curved"] = False
 visual_style["layout"] = g.layout_fruchterman_reingold(weights=g.es["weight"], maxiter=1000, area=N**10, repulserad=N**10)
 
-print(g)
 plot = Plot("plot.png", bbox=(2000, 2000), background="white")
-plot.add(g, bbox=(20, 70, 1800, 1800), **visual_style)
+plot.add(g, bbox=(20, 70, 1800, 1800), **visual_style, vertex_label=g.vs["name"])
 
 # Make the plot draw itself on the Cairo surface
 plot.redraw()
 
 # Save the plot
 plot.save()
+
+Write_Graph('Novo.txt', g)
