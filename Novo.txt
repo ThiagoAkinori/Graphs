@@ -1,5 +1,5 @@
-IGRAPH UNW- 3 3 --
-+ attr: color (v), name (v), weight (e)
+IGRAPH UNW- 3 2 --
++ attr: name (v), weight (e)
 + edges (vertex names):
-provinc--canada, canada--text, provinc--text
-[3, 1, 2]
+provinc--canada, provinc--text
+[4, 1]
