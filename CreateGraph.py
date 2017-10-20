@@ -40,38 +40,29 @@ def PlotGraph(g):
 	# Save the plot
 	plot.save()
 
-def Remove_Stopwords(stoplist, texto, texto_filtrado):
+def Remove_Stopwords(stoplist, texto):
+	texto_filtrado=[]
 	#Lendo os arquivos necessários
 	with codecs.open(stoplist,'r', "utf-8") as f:
 		stoplist = f.read().splitlines()
-		with codecs.open (texto,'r', "utf-8") as g:
-			texto = g.read().split()
 	f.close()
+	with codecs.open (texto,'r', "utf-8") as g:
+		texto = g.read().split()
 	g.close()
 	for palavra in texto:
 		#deixando a palavra em minúsculo
 		palavra = palavra.lower()
 		#filtrando pontuãção
-		if palavra.find('.')>-1:
-			palavra = palavra.replace('.','') 
-		if palavra.find(',')>-1:
-			palavra = palavra.replace(',','')
-		if palavra.find(';')>-1:
-			palavra = palavra.replace(';','')
-		if palavra.find(':')>-1:
-			palavra = palavra.replace(':','')
-		if palavra.find('?')>-1:
-			palavra = palavra.replace('?','') 
-		if palavra.find('!')>-1:
-			palavra = palavra.replace('!','')
-		if palavra.find('(')>-1:
-			palavra = palavra.replace('(','')
-		if palavra.find(')')>-1:
-			palavra = palavra.replace(')','')
-		if palavra.find('"')>-1:
-			palavra = palavra.replace('"','')
-		if palavra.find('‘')>-1:
-			palavra = palavra.replace('‘','')
+		palavra = palavra.replace('.','') 
+		palavra = palavra.replace(',','')
+		palavra = palavra.replace(';','')
+		palavra = palavra.replace(':','')
+		palavra = palavra.replace('?','') 
+		palavra = palavra.replace('!','')
+		palavra = palavra.replace('(','')
+		palavra = palavra.replace(')','')
+		palavra = palavra.replace('"','')
+		palavra = palavra.replace('‘','')
 		if palavra.find("'")>-1:
 			if palavra[palavra.find("'")+1:] == "re" or palavra[palavra.find("'")+1:] == "s":
 				palavra = palavra[0:palavra.find("'")]
@@ -84,6 +75,7 @@ def Remove_Stopwords(stoplist, texto, texto_filtrado):
 				marcador = 1;
 		if marcador == 0 and palavra != '':
 			texto_filtrado.append(palavra)
+	return texto_filtrado
 
 def CreateGraph(wordlist, g):
 	searchlist=[]
@@ -113,33 +105,36 @@ def CreateGraph(wordlist, g):
 		lastword = word
 	searchlist=[]
 	g.es["weight"]=weights
+	return g
 
-
-def Text2Graph(g):
+def AnaliseText(g, texto):
 	filtrado = []
-	lemantizing = WordNetLemmatizer()
+	lemma = WordNetLemmatizer()
 	lemantized = []
-	weights = []
 	st = PorterStemmer()
-	stem = []
+	stemm = []
 	#filtrando stopswords
-	Remove_Stopwords("stopwordEN.txt", "TextoTeste.txt", filtrado)
-	#Pos Tagging#pos_tag = nltk.pos_tag(filtrado) 
+	filtrado = Remove_Stopwords("stopwordEN.txt", texto)
+	#Pos Tagging pos_tag = nltk.pos_tag(filtrado) 
 	#Lematização
 	for word in filtrado:
-		lemantized.append(lemantizing.lemmatize(word))
+		lemantized.append(lemma.lemmatize(word))
 	filtrado=[]
 	#Stemming
 	for word in lemantized:
-		stem.append(st.stem(word))
+		stemm.append(st.stem(word))
 	lemantized=[]
-	#Construção do grafo
-	CreateGraph(stem, g)
-	stem = []
+	return stemm
+
+def Text2Graph(texto):
+	g = Graph()
+	stemmed = AnaliseText(g, texto)
+	g = CreateGraph(stemmed, g)
+	return g
 
 
-graph = Graph()
-Text2Graph(graph)
+
+graph = Text2Graph("TextoTeste.txt")
 Write_Graph("Novo.txt",graph)
 PlotGraph(graph)
 
