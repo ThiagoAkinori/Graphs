@@ -7,6 +7,7 @@ from nltk.stem.porter import PorterStemmer
 import numpy as np
 from igraph.drawing.text import TextDrawer
 import cairo
+from sklearn.metrics.pairwise import cosine_similarity
 
 
 
@@ -15,6 +16,7 @@ def Write_Graph(novo, g):
 		h.write(str(g))
 		h.write("\n")
 		h.write(str(g.es["weight"])+"\n")
+		h.write(str(g.vs["name"])+"\n"+str(g.vs["weight"]))
 	h.close()	
 
 def Write_File(novo, conteudo):
@@ -42,15 +44,13 @@ def PlotGraph(g):
 
 def Remove_Stopwords(stoplist, texto):
 	texto_filtrado=[]
-	#Lendo os arquivos necessários
+	#Lendo os arquivos necessarios
+	texto=texto.split()
 	with codecs.open(stoplist,'r', "utf-8") as f:
 		stoplist = f.read().splitlines()
 	f.close()
-	with codecs.open (texto,'r', "utf-8") as g:
-		texto = g.read().split()
-	g.close()
 	for palavra in texto:
-		#deixando a palavra em minúsculo
+		#deixando a palavra em minusculo
 		palavra = palavra.lower()
 		#filtrando pontuãção
 		palavra = palavra.replace('.','') 
@@ -77,34 +77,46 @@ def Remove_Stopwords(stoplist, texto):
 			texto_filtrado.append(palavra)
 	return texto_filtrado
 
-def CreateGraph(wordlist, g):
-	searchlist=[]
-	weights=[]
+def MkGraph(wordlist, g):
+	esweights=[]
+	vsweights=[]
+	searchlist = [] #lista de palavras encontradas
+	
+	# transforma wordlist em pesos para o grafo
 	for word in wordlist:
+		#procura palavra na lista de palavras a encontradas
 		try:
 			position = searchlist.index(word)
 		except ValueError:
 			position = -1
+		#se achar aumenta o peso do vertice e cria uma aresta
 		if position > -1:
+			vsweights[position] = vsweights[position]+1 
 			src = g.vs.find(name=word)
 			tgt = g.vs.find(name=lastword)
+			#verifica se existe aresta entre os vertices
 			if g.are_connected(src,tgt):
 				for idx, edge in enumerate(g.es):
+					#verificando em qual posicao esta a aresta entre os vertices 
 					if (edge.source == src.index and edge.target == tgt.index) or (edge.target == src.index and edge.source == tgt.index):
-						weights[idx]=weights[idx]+1
+						esweights[idx]=esweights[idx]+1
 						break
+			#se não existir cria uma aresta entre os dois vertices
 			else:
 				g.add_edge(lastword, word)
-				weights.append(1)
+				esweights.append(1)
+		#se não achar cria um vertice e adiciona uma aresta se necessario
 		else:
 			g.add_vertices(word)
+			vsweights.append(1)
 			if len(searchlist) > 0:
 				g.add_edge(lastword, word)
-				weights.append(1)
+				esweights.append(1)
 			searchlist.append(word)
 		lastword = word
-	searchlist=[]
-	g.es["weight"]=weights
+	#adiona os pesos ao grafo
+	g.vs["weight"]=vsweights
+	g.es["weight"]=esweights
 	return g
 
 def AnaliseText(g, texto):
@@ -127,14 +139,97 @@ def AnaliseText(g, texto):
 	return stemm
 
 def Text2Graph(texto):
+	#cria grafo
 	g = Graph()
-	stemmed = AnaliseText(g, texto)
-	g = CreateGraph(stemmed, g)
+	#pre processa o texto
+	wordlist = AnaliseText(g, texto)
+	#adiona pesos e arestas ao grafo
+	g = MkGraph(wordlist, g)
 	return g
 
 
+def File2Graph(texto):
+	#abre arquivo e transforma em string
+	with codecs.open (texto,'r', "utf-8") as f:
+		texto = f.read()
+	f.close()
+	#cria grafo
+	g = Graph()
+	#pre processa o texto
+	wordlist = AnaliseText(g, texto)
+	#adiona pesos e arestas ao grafo
+	g = MkGraph(wordlist, g)
+	return g
 
-graph = Text2Graph("TextoTeste.txt")
+
+def ReadQuery():
+	query = input("Enter :")
+	g = Text2Graph(query)
+	return g
+	
+
+def CosSimilarity(g1, g2):
+	#passa os nomes dos vertices do grafo para listas 
+	g1names = g1.vs["name"]
+	g2names = g2.vs["name"]
+	#passa os pesos dos vertices do grafo para 
+	g1weight = g1.vs["weight"]
+	g2weight = g2.vs["weight"]
+
+
+	#transforma lista em set
+	ing1 = set(g1names)
+	ing2 = set(g2names)
+
+
+	#passa somente as palavras que não estão em g1
+	onlyin2 = ing2 - ing1
+	#concatena as palavras que não estão em g1 com as que estão em g1
+	allnames = list(onlyin2) + g1names
+
+	#inicia os vetores de frequencia de termo
+	tfv1=[]
+	tfv2=[]
+
+	#adiciona frequencias de palavras em v1
+	for idx, name in enumerate(allnames):
+		try:
+			pos = g1names.index(name)
+		except ValueError:
+			pos = -1
+		if pos > -1:
+			tfv1.append(g1weight[pos])
+		else :
+			tfv1.append(0);
+
+	#adiciona frequencia de palavras em v2
+	for idx, name in enumerate(allnames):
+		try:
+			pos = g2names.index(name)
+		except ValueError:
+			pos = -1
+		if pos > -1:
+			tfv2.append(g2weight[pos])
+		else :
+			tfv2.append(0);
+
+	#realiza a similiaridade cosseno
+	cossim = cosine_similarity([tfv1],[tfv2])
+	print(cossim)
+	return cossim
+
+
+def SearchCossine(graph):
+	graph2 = ReadQuery()
+	similarity = CosSimilarity(graph, graph2)
+
+
+
+
+graph = File2Graph("TextoTeste.txt")
+SearchCossine(graph)
+
 Write_Graph("Novo.txt",graph)
+
 PlotGraph(graph)
 
