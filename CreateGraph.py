@@ -213,6 +213,10 @@ def CosSimilarity(g1, g2):
 		else :
 			tfv2.append(0);
 
+	print(allnames)
+	print(tfv1)
+	print(tfv2)
+
 	#realiza a similiaridade cosseno
 	cossim = cosine_similarity([tfv1],[tfv2])
 	print(cossim)
