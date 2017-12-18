@@ -162,76 +162,85 @@ def File2Graph(texto):
 	return g
 
 
-def ReadQuery():
-	query = input("Enter :")
-	g = Text2Graph(query)
-	return g
-	
 
-def CosSimilarity(g1, g2):
-	#passa os nomes dos vertices do grafo para listas 
-	g1names = g1.vs["name"]
-	g2names = g2.vs["name"]
-	#passa os pesos dos vertices do grafo para 
-	g1weight = g1.vs["weight"]
-	g2weight = g2.vs["weight"]
+def FindAdj(g1, src):
+	try: 
+		adjacents=[]
+		for tgt in g1.vs["name"]:
+			if g1.are_connected(src,tgt):
+				adjacents.append(tgt)
+		return adjacents
+	except ValueError:
+		return None
 
 
-	#transforma lista em set
-	ing1 = set(g1names)
-	ing2 = set(g2names)
+def CossineSimilarity(graph):
+	query = input("Enter: ")
+	graph2 = Text2Graph(query)
+	g2names = query.split()
+	g2weight = graph2.vs["weight"]
+	for vs in graph2.vs["name"]:
+		adjacents = FindAdj(graph, vs)
+		print(adjacents)
+		if adjacents != None:
+			g1weight = []
+			for i in adjacents:
+				g1weight.append(0)
+			gweight = graph.vs["weight"]
+			#acha os pesos da lista de adjacencia
+			for idx, vs in enumerate(graph.vs["name"]):
+				try:
+					pos = adjacents.index(vs)
+				except Exception as e:
+					pos = -1
+				if (pos > -1):	
+					g1weight[pos] = gweight[idx]
 
+			#transforma lista em set
+			ing1 = set(adjacents)
+			ing2 = set(g2names)
+		
+		
+			#passa somente as palavras que não estão em g1
+			onlyin2 = ing2 - ing1
+			#concatena as palavras que não estão em g1 com as que estão em g1
+			allnames = list(onlyin2) + adjacents
+			print (allnames)
+			#inicia os vetores de frequencia de termo
+			tfv1=[]
+			tfv2=[]
+		
+			#adiciona frequencias de palavras em v1
+			for idx, name in enumerate(allnames):
+				try:
+					pos = adjacents.index(name)
+				except ValueError:
+					pos = -1
+				if pos > -1:
+					tfv1.append(g1weight[pos])
+				else :
+					tfv1.append(0);
+		
+			#adiciona frequencia de palavras em v2
+			for idx, name in enumerate(allnames):
+				try:
+					pos = g2names.index(name)
+				except ValueError:
+					pos = -1
+				if pos > -1:
+					tfv2.append(g2weight[pos])
+				else :
+					tfv2.append(0);
+			print(tfv1)
+			print(tfv2)
+			print (cosine_similarity([tfv1],[tfv2]))
 
-	#passa somente as palavras que não estão em g1
-	onlyin2 = ing2 - ing1
-	#concatena as palavras que não estão em g1 com as que estão em g1
-	allnames = list(onlyin2) + g1names
-
-	#inicia os vetores de frequencia de termo
-	tfv1=[]
-	tfv2=[]
-
-	#adiciona frequencias de palavras em v1
-	for idx, name in enumerate(allnames):
-		try:
-			pos = g1names.index(name)
-		except ValueError:
-			pos = -1
-		if pos > -1:
-			tfv1.append(g1weight[pos])
-		else :
-			tfv1.append(0);
-
-	#adiciona frequencia de palavras em v2
-	for idx, name in enumerate(allnames):
-		try:
-			pos = g2names.index(name)
-		except ValueError:
-			pos = -1
-		if pos > -1:
-			tfv2.append(g2weight[pos])
-		else :
-			tfv2.append(0);
-
-	print(allnames)
-	print(tfv1)
-	print(tfv2)
-
-	#realiza a similiaridade cosseno
-	cossim = cosine_similarity([tfv1],[tfv2])
-	print(cossim)
-	return cossim
-
-
-def SearchCossine(graph):
-	graph2 = ReadQuery()
-	similarity = CosSimilarity(graph, graph2)
 
 
 
 
 graph = File2Graph("TextoTeste.txt")
-SearchCossine(graph)
+CossineSimilarity(graph)
 
 Write_Graph("Novo.txt",graph)
 
