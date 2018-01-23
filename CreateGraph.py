@@ -193,7 +193,7 @@ def CossineSimilarity(graph):
 					pos = adjacents.index(vs)
 				except Exception as e:
 					pos = -1
-				if (pos > -1):	
+				if pos > -1:
 					g1weight[pos] = gweight[idx]
 
 			#transforma lista em set
@@ -239,7 +239,7 @@ def CossineSimilarity(graph):
 
 
 
-graph = File2Graph("TextoTeste.txt")
+graph = File2Graph("TextoTeste2.txt")
 CossineSimilarity(graph)
 
 Write_Graph("Novo.txt",graph)

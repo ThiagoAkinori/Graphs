@@ -1,7 +1,51 @@
-IGRAPH UNW- 3 2 --
+IGRAPH UNW- 141 214 --
 + attr: name (v), weight (v), weight (e)
 + edges (vertex names):
-provinc--canada, canada--usa
-[3, 2]
-['provinc', 'canada', 'usa']
-[2, 3, 1]
+eight--o'clock, o'clock--thursday, thursday--morn, morn--arthur, arthur--feel,
+feel--good, good--imagin, imagin--yourself, yourself--sit, sit--café,
+café--day, day--home, home--town, town--next, next--tabl, tabl--hear,
+hear--peopl, peopl--speak, speak--english, english--strong, strong--north,
+north--american, american--accent, accent--friendli, friendli--person,
+person--lean, lean--say, say--hi, american--hi, american--come, come--immedi,
+immedi--answer, answer--canadian, canadian--call, call--english-speak,
+canadian--english-speak, american--canadian, american--bad, bad--tell,
+tell--scotsman, english--scotsman, english--swiss, person--swiss,
+person--german, german--spite, spite--common, common--languag,
+languag--differ, differ--cultur, cultur--nation, feel--nation, feel--canadian,
+canadian--tell, tell--insist, insist--we, american--we, canadian--we,
+canadian--same, same--way, way--quebec, quebec--determin, determin--keep,
+keep--ident, canadian--ident, canadian--provinc, determin--provinc,
+keep--canada, ident--canada, canadian--way, way--life, life--like,
+american--like, american--way, life--lot, lot--detail, differ--detail,
+canadian--differ, canadian--particularli, quebec--particularli, quebec--worri,
+worri--surviv, surviv--own, differ--own, canadian--use, use--metr,
+metr--kilometr, kilometr--measur, measur--temperatur, temperatur--celsiu,
+american--celsiu, american--use, use--foot, foot--mile, measur--mile,
+temperatur--fahrenheit, fahrenheit--usa, usa--state, canada--state,
+provinc--canada, provinc--80%, canadian--80%, canadian--live, live--150,
+150--km, km--border, border--had, bad--had, bad--effect, canadian--effect,
+canadian--economi, like--economi, like--european, european--countri,
+canada--countri, nation--canada, nation--health, health--servic, good--servic,
+good--social, social--secur, secur--system, good--system, good--welfar,
+servic--welfar, servic--paid, paid--tax, tax--cost, live--cost, canada--live,
+canada--hundr, hundr--thousand, canadian--thousand, canadian--car, car--drive,
+usa--drive, usa--go, go--shop, shop--caus, caus--econom, econom--problem,
+canada--problem, canada--half, canada--import, come--import, come--unit,
+state--unit, canada--trade, trade--deficit, usa--deficit, american--usa,
+american--influenc, influenc--question, shop--question, lot--shop,
+canadian--lot, canadian--drive, american--drive, american--car, car--car,
+car--import, canada--usa, usa--televis, quebec--televis, quebec--tend,
+tend--watch, own--watch, own--french-languag, french-languag--tv, tv--station,
+english-speak--station, canadian--choic, choic--local, english-speak--local,
+english-speak--channel, nation--channel, nation--programm, programm--cbc,
+cbc--dozen, american--dozen, american--channel, channel--brought,
+brought--cabl, cabl--satellit, satellit--unless, unless--specif, specif--want,
+watch--want, watch--local, station--local, like--station, like--tune,
+tune--big, american--big, canadian--channel, channel--surpris,
+canadian--surpris, canadian--afraid, countri--afraid, like--countri,
+like--part, usa--part, day--usa, day--quebec, quebec--becom, becom--independ,
+canadian--independ, canadian--fear, fear--rest, canada--rest, canada--break,
+break--exagger, canadian--exagger, feel--real, real--risk
+[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+['eight', "o'clock", 'thursday', 'morn', 'arthur', 'feel', 'good', 'imagin', 'yourself', 'sit', 'café', 'day', 'home', 'town', 'next', 'tabl', 'hear', 'peopl', 'speak', 'english', 'strong', 'north', 'american', 'accent', 'friendli', 'person', 'lean', 'say', 'hi', 'come', 'immedi', 'answer', 'canadian', 'call', 'english-speak', 'bad', 'tell', 'scotsman', 'swiss', 'german', 'spite', 'common', 'languag', 'differ', 'cultur', 'nation', 'insist', 'we', 'same', 'way', 'quebec', 'determin', 'keep', 'ident', 'provinc', 'canada', 'life', 'like', 'lot', 'detail', 'particularli', 'worri', 'surviv', 'own', 'use', 'metr', 'kilometr', 'measur', 'temperatur', 'celsiu', 'foot', 'mile', 'fahrenheit', 'usa', 'state', '80%', 'live', '150', 'km', 'border', 'had', 'effect', 'economi', 'european', 'countri', 'health', 'servic', 'social', 'secur', 'system', 'welfar', 'paid', 'tax', 'cost', 'hundr', 'thousand', 'car', 'drive', 'go', 'shop', 'caus', 'econom', 'problem', 'half', 'import', 'unit', 'trade', 'deficit', 'influenc', 'question', 'televis', 'tend', 'watch', 'french-languag', 'tv', 'station', 'choic', 'local', 'channel', 'programm', 'cbc', 'dozen', 'brought', 'cabl', 'satellit', 'unless', 'specif', 'want', 'tune', 'big', 'surpris', 'afraid', 'part', 'becom', 'independ', 'fear', 'rest', 'break', 'exagger', 'real', 'risk']
+[1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 10, 1, 1, 2, 1, 1, 1, 2, 1, 1, 17, 1, 3, 2, 2, 1, 1, 1, 1, 1, 1, 3, 1, 3, 1, 2, 1, 3, 4, 2, 2, 2, 2, 9, 2, 4, 2, 1, 1, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 1, 1, 5, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 2, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 2, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
