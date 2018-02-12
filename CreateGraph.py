@@ -12,6 +12,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 
 def Write_Graph(novo, g):
+	#Escreve grafo em um arquivo
 	with open(novo,'w') as h:
 		h.write(str(g))
 		h.write("\n")
@@ -20,6 +21,7 @@ def Write_Graph(novo, g):
 	h.close()	
 
 def Write_File(novo, conteudo):
+	#Escreve texto em um arquivo
 	with open(novo, 'w') as h:
 		for i in conteudo:
 			h.write(i+' ')
@@ -27,6 +29,7 @@ def Write_File(novo, conteudo):
 	h.close()
 
 def PlotGraph(g):
+	#Plota o grafo em um png
 	visual_style = {}
 	colours = ['#fecc5c', '#a31a1c']
 	outdegree = g.outdegree()
@@ -36,7 +39,7 @@ def PlotGraph(g):
 	visual_style["vertex_size"] = [x/max(outdegree)*50+3 for x in outdegree]
 	visual_style["edge_curved"] = False
 	plot = Plot("plot.png", bbox=(2000, 2000), background = 'white')
-	plot.add(g, bbox=(20, 70, 1800, 1800), **visual_style, vertex_label= g.vs["name"])
+	#plot.add(g, bbox=(20, 70, 1800, 1800), **visual_style, vertex_label= g.vs["name"])
 	# Make the plot draw itself on the Cairo surface
 	plot.redraw()
 	# Save the plot
@@ -128,10 +131,12 @@ def AnaliseText(g, texto):
 	#filtrando stopswords
 	filtrado = Remove_Stopwords("stopwordEN.txt", texto)
 	#Pos Tagging pos_tag = nltk.pos_tag(filtrado) 
+
 	#Lematização
 	for word in filtrado:
 		lemantized.append(lemma.lemmatize(word))
 	filtrado=[]
+	
 	#Stemming
 	for word in lemantized:
 		stemm.append(st.stem(word))
