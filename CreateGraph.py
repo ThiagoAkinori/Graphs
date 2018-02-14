@@ -8,8 +8,7 @@ import numpy as np
 from igraph.drawing.text import TextDrawer
 import cairo
 from sklearn.metrics.pairwise import cosine_similarity
-
-
+from gensim.models import Word2Vec
 
 def Write_Graph(novo, g):
 	#Escreve grafo em um arquivo
@@ -19,6 +18,7 @@ def Write_Graph(novo, g):
 		h.write(str(g.es["weight"])+"\n")
 		h.write(str(g.vs["name"])+"\n"+str(g.vs["weight"]))
 	h.close()	
+
 
 def Write_File(novo, conteudo):
 	#Escreve texto em um arquivo
@@ -39,7 +39,7 @@ def PlotGraph(g):
 	visual_style["vertex_size"] = [x/max(outdegree)*50+3 for x in outdegree]
 	visual_style["edge_curved"] = False
 	plot = Plot("plot.png", bbox=(2000, 2000), background = 'white')
-	#plot.add(g, bbox=(20, 70, 1800, 1800), **visual_style, vertex_label= g.vs["name"])
+	plot.add(g, bbox=(20, 70, 1800, 1800), *visual_style, vertex_label= g.vs["name"])
 	# Make the plot draw itself on the Cairo surface
 	plot.redraw()
 	# Save the plot
@@ -75,7 +75,7 @@ def Remove_Stopwords(stoplist, texto):
 		marcador = 0;	
 		for stopword in stoplist:
 			if palavra == stopword:
-				marcador = 1;
+				marcador = 1
 		if marcador == 0 and palavra != '':
 			texto_filtrado.append(palavra)
 	return texto_filtrado
@@ -153,13 +153,19 @@ def Text2Graph(texto):
 	return g
 
 
+def OpenBase():
+	base=[]
+	for i in range(1, 441):
+		base.append(File2Graph('Marujo/texto'+str(i)+'.txt'))
+	return base
+
 def File2Graph(texto):
+	#cria grafo
+	g=Graph()
 	#abre arquivo e transforma em string
 	with codecs.open (texto,'r', "utf-8") as f:
 		texto = f.read()
 	f.close()
-	#cria grafo
-	g = Graph()
 	#pre processa o texto
 	wordlist = AnaliseText(g, texto)
 	#adiona pesos e arestas ao grafo
@@ -171,6 +177,7 @@ def File2Graph(texto):
 def FindAdj(g1, src):
 	try: 
 		adjacents=[]
+		adjacents.append(src)
 		for tgt in g1.vs["name"]:
 			if g1.are_connected(src,tgt):
 				adjacents.append(tgt)
@@ -179,14 +186,13 @@ def FindAdj(g1, src):
 		return None
 
 
-def CossineSimilarity(graph):
-	query = input("Enter: ")
+def CossineSimilarity(graph, query):
 	graph2 = Text2Graph(query)
-	g2names = query.split()
+	g2names = graph2.vs["name"]
 	g2weight = graph2.vs["weight"]
+	similarities=[]
 	for vs in graph2.vs["name"]:
 		adjacents = FindAdj(graph, vs)
-		print(adjacents)
 		if adjacents != None:
 			g1weight = []
 			for i in adjacents:
@@ -210,11 +216,9 @@ def CossineSimilarity(graph):
 			onlyin2 = ing2 - ing1
 			#concatena as palavras que não estão em g1 com as que estão em g1
 			allnames = list(onlyin2) + adjacents
-			print (allnames)
 			#inicia os vetores de frequencia de termo
 			tfv1=[]
 			tfv2=[]
-		
 			#adiciona frequencias de palavras em v1
 			for idx, name in enumerate(allnames):
 				try:
@@ -224,7 +228,7 @@ def CossineSimilarity(graph):
 				if pos > -1:
 					tfv1.append(g1weight[pos])
 				else :
-					tfv1.append(0);
+					tfv1.append(0)
 		
 			#adiciona frequencia de palavras em v2
 			for idx, name in enumerate(allnames):
@@ -235,19 +239,62 @@ def CossineSimilarity(graph):
 				if pos > -1:
 					tfv2.append(g2weight[pos])
 				else :
-					tfv2.append(0);
-			print(tfv1)
-			print(tfv2)
-			print (cosine_similarity([tfv1],[tfv2]))
+					tfv2.append(0)
+
+			similarities.append(cosine_similarity([tfv1],[tfv2]))
+	if len(similarities) > 0:
+		media = np.mean(similarities)
+		return media
+	else:
+		return 0
+
+def Word2vec(graph, query):
+	adjacents= []
+	g = Text2Graph(query)
+	values = []
+	vocab = graph.vs["name"]
+	names = g.vs["name"]
+	for word in names:
+		adj = FindAdj(graph, word)
+		if adj != None:
+			adjacents.append(adj)
+	if len(adjacents):
+		w2v = Word2Vec(adjacents, min_count=1)
+		for word in names:
+			values.append(w2v.most_similar(word, topn = 1))
+		mean=[]
+		for value in values:
+			mean.append(value[0][1])
+		media = np.mean(mean)
+		return media
+	else:
+		return 0
+	
+
+def SearchInBase(base, query):
+	means = []
+	maior = 0
+	index = 0
+	for i in range(len(base)):
+		atual = CossineSimilarity(base[i], query)
+		if atual > maior:
+			index = i+1
+			maior = atual
+	print('texto '+str(index)+' similaridade '+str(maior))
 
 
 
+base = OpenBase()
 
+query=''
+while query != 'fim':
+	query = input("Entre com a consulta (digite 'fim' para finalizar consultas): ")
+	SearchInBase(base, query)
 
-graph = File2Graph("TextoTeste2.txt")
-CossineSimilarity(graph)
+#print(CossineSimilarity(base[1]))
+#print(Word2vec(base[1]))
 
-Write_Graph("Novo.txt",graph)
+#Write_Graph("Novo.txt",graph)
 
-PlotGraph(graph)
+#PlotGraph(graph)
 
