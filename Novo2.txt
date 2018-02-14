@@ -1,7 +1,0 @@
-IGRAPH UNW- 3 2 --
-+ attr: name (v), weight (v), weight (e)
-+ edges (vertex names):
-canada--list, list--usa
-[1, 1]
-['canada', 'list', 'usa']
-[1, 1, 1]
